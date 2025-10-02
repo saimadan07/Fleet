@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Control Center</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="robot-icon">🤖</div>
+                <h1>Robot Control Center</h1>
+            </div>
+            <div class="header-right">
+                <div class="notification-count">
+                    <span class="bell-icon">🔔</span>
+                    <span id="notification-count">0 notifications</span>
+                </div>
+                <button id="set-goal-btn" class="set-goal-btn">🎯 Set Goal</button>
+                <button class="settings-btn">⚙️</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <!-- Filter Panel -->
+            <div class="filter-panel">
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <span class="filter-icon">🔍</span>
+                        <span class="filter-label">Filter:</span>
+                        <select id="filter-select" class="filter-select">
+                            <option value="all">All Robots</option>
+                            <option value="online">Online</option>
+                            <option value="offline">Offline</option>
+                            <option value="error">Error</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="sort-icon">↕️</span>
+                        <span class="filter-label">Sort by:</span>
+                        <select id="sort-select" class="filter-select">
+                            <option value="name">Name</option>
+                            <option value="battery">Battery</option>
+                            <option value="status">Status</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Robot Grid -->
+            <div id="robot-grid" class="robot-grid">
+                <!-- Robot cards will be dynamically generated -->
+            </div>
+
+            <div id="no-robots" class="no-robots" style="display: none;">
+                <p>No robots match the current filter</p>
+            </div>
+        </div>
+
+        <!-- Set Robot Goal Panel -->
+        <div id="set-goal-panel" class="set-goal-panel" style="display: none;">
+            <div class="set-goal-content">
+                <div class="set-goal-header">
+                    <h3>Set Robot Goal</h3>
+                    <button id="close-goal-panel" class="close-btn">✕</button>
+                </div>
+                <div class="set-goal-body">
+                    <div class="form-group">
+                        <label for="robot-select">Select Robot:</label>
+                        <select id="robot-select" class="form-control">
+                            <option value="">Choose a robot...</option>
+                            <option value="robot-maid">Maid</option>
+                            <option value="robot-milo">Milo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-x">Goal X Coordinate:</label>
+                        <input type="number" id="goal-x" class="form-control" min="0" max="30" placeholder="Enter X coordinate">
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-y">Goal Y Coordinate:</label>
+                        <input type="number" id="goal-y" class="form-control" min="0" max="30" placeholder="Enter Y coordinate">
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-task">Task Description:</label>
+                        <input type="text" id="goal-task" class="form-control" placeholder="Enter task description">
+                    </div>
+                    <div class="form-actions">
+                        <button id="cancel-goal" class="btn btn-secondary">Cancel</button>
+                        <button id="set-goal" class="btn btn-primary">Set Goal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Notification Dropdown -->
+    <div id="notification-dropdown" class="notification-dropdown" style="display: none;">
+        <div class="notification-dropdown-header">
+            <h3>Notifications</h3>
+            <button id="clear-all-notifications" class="clear-all-btn">Clear All</button>
+        </div>
+        <div id="notifications-container" class="notifications-container">
+            <p class="no-notifications">No notifications</p>
+        </div>
+    </div>
+
+    <!-- Robot Modal -->
+    <div id="robot-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h2 id="modal-robot-name">Robot Name</h2>
+                    <div id="modal-status-badge" class="status-badge"></div>
+                </div>
+                <button id="close-modal" class="close-btn">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-grid">
+                    <div class="modal-left">
+                        <div class="modal-section">
+                            <h3>Battery Status</h3>
+                            <div id="modal-battery" class="battery-indicator"></div>
+                        </div>
+                        <div class="modal-section">
+                            <h3>Statistics</h3>
+                            <div id="modal-stats" class="modal-stats"></div>
+                        </div>
+                    </div>
+                    <div class="modal-right">
+                        <div class="modal-section">
+                            <h3>Navigation</h3>
+                            <div id="modal-minimap" class="modal-minimap"></div>
+                        </div>
+                        <div id="modal-position" class="position-info"></div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3>Current Task</h3>
+                    <div id="modal-current-task" class="current-task"></div>
+                </div>
+                <div class="modal-section">
+                    <h3>Task History</h3>
+                    <div id="modal-task-history" class="task-history"></div>
+                </div>
+                <div class="modal-section">
+                    <h3>Manual Controls</h3>
+                    <div class="modal-controls">
+                        <button id="modal-pause-btn" class="control-btn pause-btn">⏸️ Pause</button>
+                        <button id="modal-resume-btn" class="control-btn resume-btn">▶️ Resume</button>
+                        <button id="modal-stop-btn" class="control-btn stop-btn">⏹️ Emergency Stop</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
